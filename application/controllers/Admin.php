@@ -1,6 +1,9 @@
 <?php
 defined( 'BASEPATH' ) OR exit( 'No direct script access allowed' );
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Admin extends CI_Controller {
 
     function __construct() {
@@ -8,9 +11,9 @@ class Admin extends CI_Controller {
         $this->load->model( 'm_model' );
         $this->load->helper( 'my_helper' );
         $this->load->library( 'upload' );
-        // if ( $this->session->userdata( 'loged_in' ) !=true && $this->session->userdata('role') != 'admin' ) {
-        //     redirect( base_url().'auth' );
-        // }
+        if ( $this->session->userdata( 'loged_in' ) !=true && $this->session->userdata('role') != 'admin' ) {
+            redirect( base_url().'auth' );
+        }
     }
 
     public function index()
@@ -254,6 +257,98 @@ class Admin extends CI_Controller {
     function logout_account() {
         $this->session->sess_destroy();
         redirect( base_url( 'admin' ) );
+    }
+    public function export()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $style_col = [
+            'font' => ['bold' => true],
+            'aligment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'Vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'top' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+            ]
+        ];
+        $style_row = [
+            'font' => ['bold' => true],
+            'aligment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'Vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'top' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+            ]
+        ];
+
+        //TITEL
+        $sheet->setCellValue('A1', "DATA siswa");
+        $sheet->mergeCells('A1:E1');
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+
+        $sheet->setCellValue('A3', "ID   ");
+        $sheet->setCellValue('B3', 'NAMA SISWA');
+        $sheet->setCellValue('C3', 'NISN');
+        $sheet->setCellValue('D3', 'GENDER');
+        $sheet->setCellValue('E3', 'KELAS');
+        // $sheet->setCellValue('E3', 'Kelas');
+
+        $sheet->getStyle('A3')->applyFromArray($style_col);
+        $sheet->getStyle('B3')->applyFromArray($style_col);
+        $sheet->getStyle('C3')->applyFromArray($style_col);
+        $sheet->getStyle('D3')->applyFromArray($style_col);
+        // $sheet->getStyle('E3')->applyFromArray($style_col);
+
+        //GET DATA FROM DATABASE
+        $data_siswa =  $this->m_model->get_data('siswa')->result();
+
+        $no = 1;
+        $numrow = 4;
+        foreach ($data_siswa as $data) {
+            $sheet->setCellValue('A' . $numrow, $data->id_siswa);
+            $sheet->setCellValue('b' . $numrow, $data->nama_siswa);
+            $sheet->setCellValue('C' . $numrow, $data->nisn);
+            $sheet->setCellValue('D' . $numrow, $data->gender);
+            $sheet->setCellValue('E' . $numrow, $data->id_kelas);
+            // $sheet->setCellValue('E'.$numrow, $data->kelas);
+
+            $sheet->getStyle('A')->applyFromArray($style_row);
+            $sheet->getStyle('B')->applyFromArray($style_row);
+            $sheet->getStyle('C')->applyFromArray($style_row);
+            $sheet->getStyle('D')->applyFromArray($style_row);
+            $sheet->getStyle('E')->applyFromArray($style_row);
+            // $sheet->getStyle('E')->applyFromArray($style_row);
+
+            $no++;
+            $numrow++;
+        }
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(25);
+        $sheet->getColumnDimension('D')->setWidth(25);
+        $sheet->getColumnDimension('E')->setWidth(25);
+        // $sheet->getColumnDimension('E')->setWidth(15);
+
+        $sheet->getDefaultRowDimension()->setRowHight(-1);
+
+        $sheet->getPageSetup()->setOrienttation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+        $sheet->getTitle('LAPORAN DATA PEMBAYARAN');
+
+        header('content-Type: application/vnd.openxmlformats-officedocument.speradsheetml.sheet');
+        header('Content-Disposition: attachment; filename="PEMBAYARAN.xlsx"');
+
+        $writer = new XLsx($spreadsheet);
+        // $writer->save('php://output');
     }
 }
 ?>
