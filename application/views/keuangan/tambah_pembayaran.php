@@ -25,9 +25,9 @@
                     <label for="jenis_pembayaran" class="form-label">Jenis Pembayaran</label>
                     <select name="jenis_pembayaran" class="form-select">
                         <option selected> Pilih Pembayaran </option>
-                        <option value="jumlah_pembayaran_spp">Uang SPP</option>
-                        <option value="jumlah_pembayaran_uang_gedung">pembayaran Uang gedung</option>
-                        <option value="jumlah_pembayaran_uang_sragam">pembayaran Sragam</option>
+                        <option value="jumlah pembayaran spp">Uang SPP</option>
+                        <option value="pembayaran uang gedung">pembayaran Uang gedung</option>
+                        <option value="pembayaran uang sragam">pembayaran Sragam</option>
                     </select>
                 </div>
                 <div class="mb-3 col-6" style="margin-left: 25%;">

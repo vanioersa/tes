@@ -17,8 +17,6 @@ class Keuangan extends CI_Controller
     }
     public function export()
     {
-        require_once FCPATH . 'vendor/autoload.php';
-
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -48,35 +46,47 @@ class Keuangan extends CI_Controller
             ]
         ];
 
+        // set judul
         $sheet->setCellValue('A1', "DATA PEMBAYARAN");
         $sheet->mergeCells('A1:E1');
         $sheet->getStyle('A1')->getFont()->setBold(true);
-
+        // set thead
         $sheet->setCellValue('A3', "ID");
         $sheet->setCellValue('B3', "JENIS PEMBAYARAN");
         $sheet->setCellValue('C3', "TOTAL PEMBAYARAN");
+        $sheet->setCellValue('D3', "SISWA");
+        // $sheet->setCellValue('E3', "KELAS");
 
+        // mengaplikasikan style thead
         $sheet->getStyle('A3')->applyFromArray($style_col);
         $sheet->getStyle('B3')->applyFromArray($style_col);
         $sheet->getStyle('C3')->applyFromArray($style_col);
+        $sheet->getStyle('D3')->applyFromArray($style_col);
+        // $sheet->getStyle('E3')->applyFromArray($style_col);
 
-        $data_pembayaran = $this->m_model->get_data('pembayaran')->result();
+        // get dari database
+        $data_pembayaran = $this->m_model->getDataPembayaran();
 
         $no = 1;
         $numrow = 4;
         foreach ($data_pembayaran as $data) {
-            $sheet->setCellValue('A' . $numrow, $no);
+            $sheet->setCellValue('A' . $numrow, $data->id);
             $sheet->setCellValue('B' . $numrow, $data->jenis_pembayaran);
             $sheet->setCellValue('C' . $numrow, $data->total_pembayaran);
+            $sheet->setCellValue('D' . $numrow, $data->nama_siswa);
+            // $sheet->setCellValue('E' . $numrow, $data->tingkat_kelas . ' ' . $data->jurusan_kelas);
 
             $sheet->getStyle('A' . $numrow)->applyFromArray($style_row);
             $sheet->getStyle('B' . $numrow)->applyFromArray($style_row);
             $sheet->getStyle('C' . $numrow)->applyFromArray($style_row);
+            $sheet->getStyle('D' . $numrow)->applyFromArray($style_row);
+            // $sheet->getStyle('E' . $numrow)->applyFromArray($style_row);
 
             $no++;
             $numrow++;
         }
 
+        // set panjang column
         $sheet->getColumnDimension('A')->setWidth(5);
         $sheet->getColumnDimension('B')->setWidth(25);
         $sheet->getColumnDimension('C')->setWidth(25);
@@ -87,6 +97,7 @@ class Keuangan extends CI_Controller
 
         $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
 
+        // set nama file saat di export
         $sheet->setTitle("LAPORAN DATA PEMBAYARAN");
         header('Content-Type: aplication/vnd.openxmlformants-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="PEMBAYARAN.xlsx"');
@@ -129,7 +140,7 @@ class Keuangan extends CI_Controller
 
     public function pembayaran()
     {
-        $data['pembayaran'] = $this->m_model->get_pembayaran();
+        $data['pembayaran'] = $this->m_model->getDataPembayaran();
         $this->load->view('keuangan/pembayaran', $data);
     }
 

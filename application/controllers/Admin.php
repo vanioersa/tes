@@ -148,14 +148,14 @@ class Admin extends CI_Controller {
     // }
 
     public function hapus_siswa( $id ) {
-        $siswa = $this->m_model->get_by_id( 'siswa', 'id_siswa', $id )->row();
+        $siswa = $this->m_model->get_by_id( 'siswa', 'id', $id )->row();
         if ( $siswa ) {
             if ( $siswa->foto !== 'User.png' ) {
                 $file_path = './images/siswa/' . $siswa->foto;
 
                 if ( file_exists( $file_path ) ) {
                     if ( unlink( $file_path ) ) {
-                        $this->m_model->delete( 'siswa', 'id_siswa', $id );
+                        $this->m_model->delete( 'siswa', 'id', $id );
                         redirect( base_url( 'admin/siswa' ) );
                     } else {
                         echo 'gagal menghapus file.';
@@ -164,7 +164,7 @@ class Admin extends CI_Controller {
                     echo 'file tidak ditemukan.';
                 }
             } else {
-                $this->m_model->delete( 'siswa', 'id_siswa', $id );
+                $this->m_model->delete( 'siswa', 'id', $id );
                 redirect( base_url( 'admin/siswa' ) );
             }
         } else {
@@ -342,10 +342,10 @@ class Admin extends CI_Controller {
 
         $sheet->getPageSetup()->setOrienttation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
 
-        $sheet->getTitle('LAPORAN DATA PEMBAYARAN');
+        $sheet->getTitle('LAPORAN DATA SISWA');
 
         header('content-Type: application/vnd.openxmlformats-officedocument.speradsheetml.sheet');
-        header('Content-Disposition: attachment; filename="PEMBAYARAN.xlsx"');
+        header('Content-Disposition: attachment; filename="SISWA.xlsx"');
 
         $writer = new XLsx($spreadsheet);
         // $writer->save('php://output');

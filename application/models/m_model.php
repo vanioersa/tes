@@ -50,10 +50,13 @@ class M_model extends CI_Model {
     }
     //from keuangan
 
-    function get_pembayaran() {
-        $this->db->select( 'pembayaran.*, siswa.nama_siswa' );
-        $this->db->from( 'pembayaran' );
-        $this->db->join( 'siswa', 'pembayaran.id_siswa = siswa.id_siswa', 'left' );
+    public function getDataPembayaran()
+    {
+        $this->db->select('pembayaran.*,siswa.nama_siswa');
+        $this->db->from('pembayaran');
+        $this->db->join('siswa', 'pembayaran.id_siswa = siswa.id_siswa', 'left');
+        // $this->db->join('kelas', 'pembayaran.id_kelas = kelas.id', 'left');
+        // Query database untuk mengambil data
         $query = $this->db->get();
         return $query->result();
     }
@@ -76,6 +79,21 @@ class M_model extends CI_Model {
             return false;
         }
     }
+    public function tampil_siswa_byid( $nisn )
+    {
+           $this->db->select( 'id_siswa' );
+           $this->db->from( 'siswa' );
+           $this->db->where( 'nisn', $nisn );
+           $query = $this->db->get();
+   
+           if ( $query->num_rows() > 0 ) {
+               $result = $query->row();
+               return $result->id_siswa;
+           } else {
+               return false;
+           }
+       }
 }
+
 ?>
 

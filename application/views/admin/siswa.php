@@ -11,7 +11,7 @@
 
 <body style="overflow: hidden;">
 
-<div class="d-flex">
+  <div class="d-flex">
     <div class="col-12 bg-dark" style="width: 15%;">
       <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
         <a href="" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -73,12 +73,12 @@
           <div class="modal-body">
             <input type="file" name="file">
             <input type="submit" name="import" class="btn btn-outline-success" value="import">
-            <a href="<?php echo base_url('admin/export') ?>"><button type="submit" class="btn btn-outline-success" name="submit"><i class="fa-solid fa-file-export"></i> Export</button></a>
+            <a href="<?php echo base_url('admin/export') ?>" class="btn btn-outline-success"><i class="fa-solid fa-file-export"></i> Export</a>
           </div>
-        </form> 
+        </form>
         <br>
-        <table class="table table-bordered text-center">
-          <thead class="table-primary text-center">
+        <table class="table table-info table-striped table-bordered border-primary text-center">
+          <thead class="table table-danger text-center">
             <th scope="col">No</th>
             <th scope="col">foto</th>
             <th scope="col">Nama siswa</th>
@@ -86,8 +86,6 @@
             <th scope="col">Gender</th>
             <th scope="col">kelas</th>
             <th scope="col">Aksi</th>
-            </tr>
-
           </thead>
           <tbody classs="table-grup-divider">
             <?php $no = 0;
@@ -100,10 +98,8 @@
                 <td><?php echo $row->gender ?></td>
                 <td><?php echo tampil_full_kelas_byid($row->id_kelas) ?></td>
                 <td>
-                  <a href="<?php echo base_url('admin/ubah_siswa/') . $row->id_siswa ?>" class="btn btn-primary">Ubah</a>
-                  <button onclick="hapus(<?php echo $row->id_siswa ?>)" class="btn btn-danger">
-                    Hapus
-                  </button>
+                  <a href="<?php echo base_url('admin/ubah_siswa/') . $row->id_siswa ?>" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></a>
+                  <button onclick="hapus(<?php echo $row->id_siswa ?>)" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i></button>
                 </td>
               </tr>
             <?php endforeach ?>

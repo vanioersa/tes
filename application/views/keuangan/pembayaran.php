@@ -68,7 +68,7 @@
           <div class="modal-body">
             <input type="file" name="file">
             <input type="submit" name="import" class="btn btn-outline-success" value="import">
-            <a href="<?php echo base_url('keuangan/export')?>" class="btn btn-outline-secondary">Export <i class="fa-solid fa-file-arrow-down"></i> </a>
+            <a href="<?php echo base_url('keuangan/export')?>" class="btn btn-outline-secondary">Export <i class="fa-solid fa-file-arrow-down"></i></a>
           </div>
         </form> 
         <br>
@@ -92,7 +92,7 @@
                 <td>RP. <?php echo $row->total_pembayaran ?></td>
                 <td>
                   <a href="<?php echo base_url('keuangan/ubah_pembayaran/') . $row->id ?>" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></a>
-                  <button onclick="hapus(<?php echo $row->id ?>)" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> </button>
+                  <button onclick="hapus(<?php echo $row->id ?>)" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i></button>
                 </td>
               </tr>
             <?php endforeach ?>

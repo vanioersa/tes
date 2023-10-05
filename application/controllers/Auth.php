@@ -14,39 +14,39 @@ class Auth extends CI_Controller {
 		$this->load->view('auth/login');
 	}
 	
-	public function fungsi_login()
-	{
+	public function fungsi_login() {
+
 		$email = $this->input->post('email', true);
 		$password = $this->input->post('password', true);
-		$data =  ['email' => $email ];
+		$data = ['email' => $email,];
 		$query = $this->m_model->getwhere('admin', $data);
 		$result = $query->row_array();
-		
+	  
 		if(!empty($result) && md5($password) === $result['password']) {
 			$data = [
-				'loged_in' => TRUE,
-				'email'    => $result['email'],
-				'username' => $result['username'],
-				'roll'     => $result['roll'],
-				'id'       => $result['id'],
+			  'loged_in' => TRUE,
+			  'email'    => $result['email'],
+			  'username' => $result['username'],
+			  'role'     => $result['role'],
+			  'id'       => $result['id'],
 			];
 			$this->session->set_userdata($data);
-			if($this->session->userdata('roll') == 'admin'){
-				redirect(base_url(). "admin");
+			if($this->session->userdata('role') == 'admin'){
+			  redirect(base_url(). "admin");
 			}
-			elseif ($this->session->userdata('roll') == 'keuangan' ) {
-				redirect(base_url(). "keuangan");
+			elseif ($this->session->userdata('role') == 'keuangan' ) {
+			  redirect(base_url(). "keuangan");
 			}
 			else {
-					redirect (base_url(). "auth");
+				redirect (base_url(). "auth");
 			}
-		}
-				else{
-					redirect(base_url(). "auth");
-				}
+		  }
+			  else{
+				redirect(base_url(). "auth");
+			  }
 			}
 			function logout(){
-				$this->session->sess_destroy();
-				redirect(base_url('auth'));
+			  $this->session->sess_destroy();
+			  redirect(base_url('auth'));
 			}
 	}
