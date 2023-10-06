@@ -64,14 +64,9 @@
       <div class="py-3 h-auto" style="margin-left: 1px;">
         <h1 style="margin-bottom: 20px; text-align: center;"><b>Pembayaran</b></h1>
         <a href="<?php echo base_url('keuangan/tambah_pembayaran') ?>"><button type="submit" class="btn btn-primary w-25" name="submit">Tambah <i class="fa-solid fa-folder-plus"></i></button></a>
-        <form style="margin-left: 790px;" method="post" enctype="multipart/form-data" action="<?php base_url('keuangan/import') ?>">
-          <div class="modal-body">
-            <input type="file" name="file">
-            <input type="submit" name="import" class="btn btn-outline-success" value="import">
-            <a href="<?php echo base_url('keuangan/export')?>" class="btn btn-outline-secondary">Export <i class="fa-solid fa-file-arrow-down"></i></a>
-          </div>
-        </form> 
-        <br>
+        
+        <a href="<?php echo base_url('keuangan/export')?>" class="btn btn-outline-secondary">Export <i class="fa-solid fa-file-arrow-down"></i></a>
+        <br><br>
         <table class="table table-bordered">
           <thead class="table-primary text-center">
             <th scope="col">No</th>
@@ -98,7 +93,12 @@
             <?php endforeach ?>
           </tbody>
         </table>
-        
+        <form method="post" enctype="multipart/form-data" action="<?= base_url('keuangan/import') ?>">
+          <div class="modal-body">
+            <input type="file" name="file">
+            <input type="submit" name="import" class="btn btn-outline-success" value="import">
+          </div>
+        </form> 
 
         <script>
           function hapus(id) {

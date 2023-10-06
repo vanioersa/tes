@@ -11,7 +11,7 @@ class Keuangan extends CI_Controller
     {
         parent::__construct();
         $this->load->model('m_model');
-        if ($this->session->userdata('loged_in') != true && $this->session->userdata('role') != 'keuangan') {
+        if ($this->session->userdata('loged_in') != true || $this->session->userdata('role') != 'keuangan') {
             redirect(base_url() . 'auth');
         }
     }
@@ -23,26 +23,26 @@ class Keuangan extends CI_Controller
         $style_col = [
             'font' => ['bold' => true],
             'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\style\Alignment::HORIZONTAL_CENTER,
-                'vertical' => \PhpOffice\PhpSpreadsheet\style\Alignment::VERTICAL_CENTER
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             ],
             'borders' => [
-                'top' => ['borderstyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
-                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
-                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
-                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN]
+                'top' => ['borderstyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]
             ]
         ];
 
         $style_row = [
             'alignment' => [
-                'vertical' => \PhpOffice\PhpSpreadsheet\style\Alignment::VERTICAL_CENTER
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
             ],
             'borders' => [
-                'top' => ['borderstyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
-                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
-                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
-                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN]
+                'top' => ['borderstyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]
             ]
         ];
 
@@ -105,6 +105,20 @@ class Keuangan extends CI_Controller
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
+    }
+    public function export_pembayaran()
+    {
+        $data['data_pembayaran'] = $this->m_model->get_data('pembayaran')->result();
+        $data['nama'] = 'pembayaran';
+        if ($this->uri->segment(3) == "pdf") {
+            $this->load->library('pdf');
+            $this->pdf->load_view('keuangan/export_data_pembayaran', $data);
+            $this->pdf->load_view('keuangan/export_data_pembayaran', $data);
+            $this->pdf->render();
+            $this->pdf->stream("data_pembayaran.pdf", array("Attachment" => false));
+        } else {
+            $this->load->view('keuangan/download_data_pembayaran', $data);
+        }
     }
     public function import()
     {

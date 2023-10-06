@@ -11,7 +11,7 @@ class Admin extends CI_Controller {
         $this->load->model( 'm_model' );
         $this->load->helper( 'my_helper' );
         $this->load->library( 'upload' );
-        if ( $this->session->userdata( 'loged_in' ) !=true && $this->session->userdata('role') != 'admin' ) {
+        if ( $this->session->userdata( 'loged_in' ) !=true || $this->session->userdata('role') != 'admin' ) {
             redirect( base_url().'auth' );
         }
     }
@@ -52,7 +52,6 @@ class Admin extends CI_Controller {
         $data[ 'siswa' ] = $this->m_model->get_data( 'siswa' )->result();
         $this->load->view( 'admin/siswa', $data );
     }
-
     public function tambah_siswa()
  {
         $data[ 'kelas' ] = $this->m_model->get_data( 'kelas' )->result();
@@ -252,7 +251,7 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata( 'error', 'gagal...' );
             echo 'error gais';
         }
-    }
+    } 
 
     function logout_account() {
         $this->session->sess_destroy();
@@ -265,90 +264,143 @@ class Admin extends CI_Controller {
 
         $style_col = [
             'font' => ['bold' => true],
-            'aligment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'Vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\style\Alignment::VERTICAL_CENTER
             ],
             'borders' => [
-                'top' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-            ]
-        ];
-        $style_row = [
-            'font' => ['bold' => true],
-            'aligment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'Vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
-            ],
-            'borders' => [
-                'top' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
-                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+                'top' => ['borderstyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
+                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
+                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
+                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN]
             ]
         ];
 
-        //TITEL
-        $sheet->setCellValue('A1', "DATA siswa");
+        $style_row = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\style\Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'top' => ['borderstyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
+                'right' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
+                'bottom' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN],
+                'left' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\style\Border::BORDER_THIN]
+            ]
+        ];
+
+        // set judul
+        $sheet->setCellValue('A1', "Data Siswa  ");
         $sheet->mergeCells('A1:E1');
         $sheet->getStyle('A1')->getFont()->setBold(true);
+        // set thead
+        $sheet->setCellValue('A3', "ID");
+        $sheet->setCellValue('B3', "Nama Siswa");
+        $sheet->setCellValue('C3', "NISN");
+        $sheet->setCellValue('D3', "Gender");
+        $sheet->setCellValue('E3', "Kelas");
+        $sheet->setCellValue('F3', "Foto");
+        // $sheet->setCellValue('E3', "KELAS");
 
-        $sheet->setCellValue('A3', "ID   ");
-        $sheet->setCellValue('B3', 'NAMA SISWA');
-        $sheet->setCellValue('C3', 'NISN');
-        $sheet->setCellValue('D3', 'GENDER');
-        $sheet->setCellValue('E3', 'KELAS');
-        // $sheet->setCellValue('E3', 'Kelas');
-
+        // mengaplikasikan style thead
         $sheet->getStyle('A3')->applyFromArray($style_col);
         $sheet->getStyle('B3')->applyFromArray($style_col);
         $sheet->getStyle('C3')->applyFromArray($style_col);
         $sheet->getStyle('D3')->applyFromArray($style_col);
+        $sheet->getStyle('E3')->applyFromArray($style_col);
+        $sheet->getStyle('F3')->applyFromArray($style_col);
         // $sheet->getStyle('E3')->applyFromArray($style_col);
 
-        //GET DATA FROM DATABASE
-        $data_siswa =  $this->m_model->get_data('siswa')->result();
+        // get dari database
+        $data_pembayaran = $this->m_model->getDataSiswa();
 
         $no = 1;
         $numrow = 4;
-        foreach ($data_siswa as $data) {
-            $sheet->setCellValue('A' . $numrow, $data->id_siswa);
-            $sheet->setCellValue('b' . $numrow, $data->nama_siswa);
+        foreach ($data_pembayaran as $data) {
+            $sheet->setCellValue('A' . $numrow, $data->id);
+            $sheet->setCellValue('B' . $numrow, $data->nama_siswa);
             $sheet->setCellValue('C' . $numrow, $data->nisn);
             $sheet->setCellValue('D' . $numrow, $data->gender);
-            $sheet->setCellValue('E' . $numrow, $data->id_kelas);
-            // $sheet->setCellValue('E'.$numrow, $data->kelas);
+            $sheet->setCellValue('E' . $numrow, $data->jurusan_kelas.''.$data->tingkat_kelas);
+            $sheet->setCellValue('F' . $numrow, $data->foto);
+            // $sheet->setCellValue('E' . $numrow, $data->tingkat_kelas . ' ' . $data->jurusan_kelas);
 
-            $sheet->getStyle('A')->applyFromArray($style_row);
-            $sheet->getStyle('B')->applyFromArray($style_row);
-            $sheet->getStyle('C')->applyFromArray($style_row);
-            $sheet->getStyle('D')->applyFromArray($style_row);
-            $sheet->getStyle('E')->applyFromArray($style_row);
-            // $sheet->getStyle('E')->applyFromArray($style_row);
+            $sheet->getStyle('A' . $numrow)->applyFromArray($style_row);
+            $sheet->getStyle('B' . $numrow)->applyFromArray($style_row);
+            $sheet->getStyle('C' . $numrow)->applyFromArray($style_row);
+            $sheet->getStyle('D' . $numrow)->applyFromArray($style_row);
+            $sheet->getStyle('E' . $numrow)->applyFromArray($style_row);
+            $sheet->getStyle('F' . $numrow)->applyFromArray($style_row);
+            // $sheet->getStyle('E' . $numrow)->applyFromArray($style_row);
 
             $no++;
             $numrow++;
         }
+
+        // set panjang column
         $sheet->getColumnDimension('A')->setWidth(5);
         $sheet->getColumnDimension('B')->setWidth(25);
         $sheet->getColumnDimension('C')->setWidth(25);
         $sheet->getColumnDimension('D')->setWidth(25);
         $sheet->getColumnDimension('E')->setWidth(25);
-        // $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(25);
 
-        $sheet->getDefaultRowDimension()->setRowHight(-1);
+        $sheet->getDefaultRowDimension()->setRowHeight(-1);
 
-        $sheet->getPageSetup()->setOrienttation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
 
-        $sheet->getTitle('LAPORAN DATA SISWA');
+        // set nama file saat di export
+        $sheet->setTitle("LAPORAN DATA SISWA");
+        header('Content-Type: aplication/vnd.openxmlformants-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="siswa.xlsx"');
+        header('Cache-Control: max-age=0');
 
-        header('content-Type: application/vnd.openxmlformats-officedocument.speradsheetml.sheet');
-        header('Content-Disposition: attachment; filename="SISWA.xlsx"');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+    public function import()
+    {
+        if (isset($_FILES["file"]["name"])) {
+            $path = $_FILES["file"]["tmp_name"];
+            $object = PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+            foreach ($object->getWorksheetIterator() as $worksheet) {
+                $highestRow = $worksheet->getHighestRow();
+                $highestColumn = $worksheet->getHighestColumn();
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $nama_siswa = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                    $nisn = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $gender = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    $tingkat_kelas = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                    $jurusan_kelas = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
 
-        $writer = new XLsx($spreadsheet);
-        // $writer->save('php://output');
+                    $get_by_kelas = $this->m_model->get_by_kelas($tingkat_kelas, $jurusan_kelas);
+                    $data = array(
+                        'nama_siswa' => $nama_siswa,
+                        'nisn' => $nisn,
+                        'gender' => $gender,
+                        'id_kelas' => $get_by_kelas,
+                        'foto' => 'User.png'
+                    );
+                    $this->m_model->tambah_data('siswa', $data);
+                }
+            }
+            redirect(base_url('admin/siswa'));
+        } else {
+            echo 'Invalid File';
+        }
+    }
+    public function export_guru()
+    {
+        $data['data_guru'] = $this->m_model->get_data('guru')->result();
+        $data['nama'] = 'guru';
+        if ($this->uri->segment(3) == "pdf") {
+            $this->load->library('pdf');
+            $this->pdf->load_view('admin/export_data_guru', $data);
+            $this->pdf->load_view('admin/export_data_guru', $data);
+            $this->pdf->render();
+            $this->pdf->stream("data_guru.pdf", array("Attachment" => false));
+        } else {
+            $this->load->view('admin/download_data_guru', $data);
+        }
     }
 }
 ?>

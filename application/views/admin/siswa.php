@@ -69,13 +69,13 @@
       <div class="py-3 h-auto" style="margin-left: 1px;">
         <h1 style="background-color: red; margin-bottom: 20px; text-align: center;"><b>Siswa</b></h1>
         <a href="<?php echo base_url('admin/tambah_siswa') ?>"><button type="submit" class="btn btn-primary w-25" name="submit">Tambah <i class="fa-solid fa-folder-plus"></i></button></a>
-        <form style="margin-left: 800px;" method="post" enctype="multipart/form-data" action="<?php base_url('admin/import') ?>">
+        <form method="post" enctype="multipart/form-data" action="<?= base_url('admin/import') ?>">
           <div class="modal-body">
             <input type="file" name="file">
             <input type="submit" name="import" class="btn btn-outline-success" value="import">
-            <a href="<?php echo base_url('admin/export') ?>" class="btn btn-outline-success"><i class="fa-solid fa-file-export"></i> Export</a>
           </div>
-        </form>
+        </form> 
+        <a href="<?php echo base_url('admin/export') ?>" class="btn btn-outline-success"><i class="fa-solid fa-file-export"></i> Export</a>
         <br>
         <table class="table table-info table-striped table-bordered border-primary text-center">
           <thead class="table table-danger text-center">
