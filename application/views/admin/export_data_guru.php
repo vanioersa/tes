@@ -29,7 +29,7 @@
             <td>Nama Guru</td>
             <td>NIK</td>
             <td>Gender</td>
-            <td>Gur Mapel</td>
+            <td>Guru Mapel</td>
             <td>Walikelas</td>
         </tr>
         <?php $no= 1; 
@@ -39,8 +39,12 @@
             <td><?php echo $key->nama_guru ?></td>
             <td><?php echo $key->nik ?></td>
             <td><?php echo $key->gender ?></td>
-            <td><?php echo $key->id_mapel ?></td>
-            <!-- <td><?php echo $key->id_kelas ?></td> -->
+            <td><?php echo tampil_full_mapel($key->id_mapel) ?></td>
+            <td><?php if (!empty($key->id_kelas)) {
+              echo tampil_full_kelas_byid($key->id_kelas);
+            }else {
+                echo "Bukan Wali Kelas";
+            }  ?></td>
         </tr>
         <?php } ?>
     </table>
