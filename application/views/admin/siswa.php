@@ -9,9 +9,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 
-<body style="overflow: hidden;">
+<body>
 
-  <div class="d-flex">
+  <div class="d-flex"> 
     <div class="col-12 bg-dark" style="width: 15%;">
       <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
         <a href="" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -66,18 +66,19 @@
           </div>
         </div>
       </nav>
-      <div class="py-3 h-auto" style="margin-left: 1px;">
+      <div class="py-3 h-auto " style="margin-left: 5px;">
         <h1 style="background-color: red; margin-bottom: 20px; text-align: center;"><b>Siswa</b></h1>
         <a href="<?php echo base_url('admin/tambah_siswa') ?>"><button type="submit" class="btn btn-primary w-25" name="submit">Tambah <i class="fa-solid fa-folder-plus"></i></button></a>
+        <a href="<?php echo base_url('admin/export') ?>" class="btn btn-outline-success"><i class="fa-solid fa-file-export"></i> Export</a>
+        <br><br>
         <form method="post" enctype="multipart/form-data" action="<?= base_url('admin/import') ?>">
           <div class="modal-body">
             <input type="file" name="file">
             <input type="submit" name="import" class="btn btn-outline-success" value="import">
           </div>
         </form> 
-        <a href="<?php echo base_url('admin/export') ?>" class="btn btn-outline-success"><i class="fa-solid fa-file-export"></i> Export</a>
-        <br>
-        <table class="table table-info table-striped table-bordered border-primary text-center">
+        <br>  
+        <table class="scrollspy-example overflow-y-scroll table table-info table-striped table-bordered border-primary text-center" data-bs-spy="scroll">
           <thead class="table table-danger text-center">
             <th scope="col">No</th>
             <th scope="col">foto</th>
@@ -116,6 +117,7 @@
         }
       }
     </script>
+  </div>
 </body>
 
 </html>

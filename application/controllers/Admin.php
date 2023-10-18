@@ -179,58 +179,58 @@ class Admin extends CI_Controller {
     //from untuk akun
 
     public function account()
- {
+    {
         $data[ 'admin' ] = $this->m_model->get_by_id( 'admin', 'id', $this->session->userdata( 'id' ) )->result();
-        $this->load->view( 'admin/account', $data );
+        $this->load->view('admin/account', $data);
     }
     // from untuk ubah akun
 
-    public function aksi_ubah_account()
- {
-        $foto = $this->upload_img( 'foto' );
-        $passswod_baru = $this->input->post( 'password_baru' );
-        $konfirmasi_password = $this->input->post( 'konfirmasi_password' );
-        $email = $this->input->post( 'email' );
-        $username = $this->input->post( 'username' );
+        public function aksi_ubah_account()
+    {
+            $foto = $this->upload_img( 'foto' );
+            $passswod_baru = $this->input->post( 'password_baru' );
+            $konfirmasi_password = $this->input->post( 'konfirmasi_password' );
+            $email = $this->input->post( 'email' );
+            $username = $this->input->post( 'username' );
 
-        if ( $foto[ 0 ] == false ) {
-            //data yg akan diubah
-            $data = [
-                'foto'=> 'User.jpg',
-                'email'=> $email,
-                'username'=> $username,
-            ];
-        } else {
-            //data yg akan diubah
-            $data = [
-                'foto'=> $foto[ 1 ],
-                'email'=> $email,
-                'username'=> $username,
-            ];
-
-        }
-        //kondisi jika ada password baru
-        if ( !empty( $password_baru ) ) {
-            //pastikan password baru dan konfirmasi password sama
-            if ( $password_baru === $konfirmasi_password ) {
-                //wadah password baru
-                $data[ 'password' ] = md5( $password_baru );
+            if ( $foto[ 0 ] == false ) {
+                //data yg akan diubah
+                $data = [
+                    'foto'=> 'User.jpg',
+                    'email'=> $email,
+                    'username'=> $username,
+                ];
             } else {
-                $this->session->set_flashdata( 'message', 'password baru dan konfirmasi password harus sama' );
+                //data yg akan diubah
+                $data = [
+                    'foto'=> $foto[ 1 ],
+                    'email'=> $email,
+                    'username'=> $username,
+                ];
+
+            }
+            //kondisi jika ada password baru
+            if ( !empty( $password_baru ) ) {
+                //pastikan password baru dan konfirmasi password sama
+                if ( $password_baru === $konfirmasi_password ) {
+                    //wadah password baru
+                    $data[ 'password' ] = md5( $password_baru );
+                } else {
+                    $this->session->set_flashdata( 'message', 'password baru dan konfirmasi password harus sama' );
+                    redirect( base_url( 'admin/account' ) );
+                }
+            }
+
+            //untuk melakukan pembaruan data
+            $this->session->set_userdata( $data );
+            $update_result = $this->m_model->ubah_data( 'admin', $data, array( 'id' => $this->session->userdata( 'id' ) ) );
+
+            if ( $update_result ) {
+                redirect( base_url( 'admin/account' ) );
+            } else {
                 redirect( base_url( 'admin/account' ) );
             }
         }
-
-        //untuk melakukan pembaruan data
-        $this->session->set_userdata( $data );
-        $update_result = $this->m_model->ubah_data( 'admin', $data, array( 'id' => $this->session->userdata( 'id' ) ) );
-
-        if ( $update_result ) {
-            redirect( base_url( 'admin/account' ) );
-        } else {
-            redirect( base_url( 'admin/account' ) );
-        }
-    }
 
     public function upload_image()
  {
@@ -403,4 +403,3 @@ class Admin extends CI_Controller {
         }
     }
 }
-?>
